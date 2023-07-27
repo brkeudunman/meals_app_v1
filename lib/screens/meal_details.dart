@@ -4,7 +4,7 @@ import 'package:transparent_image/transparent_image.dart';
 import '../models/meal.dart';
 import '../widgets/list-view/list-view.dart';
 
-class MealDetailsScreen extends StatelessWidget {
+class MealDetailsScreen extends StatefulWidget {
   final Meal meal;
   final void Function(Meal meal) onTapFavorite;
 
@@ -12,17 +12,36 @@ class MealDetailsScreen extends StatelessWidget {
       {super.key, required this.meal, required this.onTapFavorite});
 
   @override
-  Widget build(BuildContext context) {
-    bool switchVar = false;
+  State<MealDetailsScreen> createState() {
+    return _MealDetailsState();
+  }
+}
 
+class _MealDetailsState extends State<MealDetailsScreen> {
+  bool switchVar = false;
+
+  void _switchVar() {
+    if (switchVar) {
+      setState(() {
+        switchVar = false;
+      });
+    } else {
+      setState(() {
+        switchVar = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(meal.title),
+        title: Text(widget.meal.title),
         actions: [
           IconButton(
             onPressed: () {
-              onTapFavorite(meal);
-              switchVar = !switchVar;
+              widget.onTapFavorite(widget.meal);
+              _switchVar();
             },
             icon: Icon(switchVar == false ? Icons.star_border : Icons.star),
           )
@@ -34,7 +53,7 @@ class MealDetailsScreen extends StatelessWidget {
             FadeInImage(
               placeholder: MemoryImage(kTransparentImage),
               image: NetworkImage(
-                meal.imageUrl,
+                widget.meal.imageUrl,
               ),
             ),
             const SizedBox(
@@ -47,19 +66,19 @@ class MealDetailsScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  MealTraits(meal: meal),
+                  MealTraits(meal: widget.meal),
                   const SizedBox(
                     height: 12,
                   ),
                   MealDetailListView(
-                    data: meal.ingredients,
+                    data: widget.meal.ingredients,
                     title: 'Ingredients',
                   ),
                   const SizedBox(
                     height: 12,
                   ),
                   MealDetailListView(
-                    data: meal.steps,
+                    data: widget.meal.steps,
                     title: 'Steps',
                   ),
                 ],

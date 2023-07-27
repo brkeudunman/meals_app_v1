@@ -8,11 +8,13 @@ import '../models/meal.dart';
 
 class Categories extends StatelessWidget {
   final void Function(Meal meal) onTapFavorite;
+  final List<Meal> availableMeals;
 
-  const Categories({super.key, required this.onTapFavorite});
+  const Categories(
+      {super.key, required this.onTapFavorite, required this.availableMeals});
 
   void _selectedCategory(BuildContext context, Category category) {
-    var filteredList = dummyMeals
+    var filteredList = availableMeals
         .where((meal) => meal.categories.contains(category.id))
         .toList();
 
