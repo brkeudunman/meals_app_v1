@@ -44,6 +44,7 @@ class _MealDetailsState extends ConsumerState<MealDetailsScreen> {
               transitionBuilder: (child, animation) => FadeTransition(
                 opacity: animation,
                 child: child,
+
               ),
             ),
           ),
