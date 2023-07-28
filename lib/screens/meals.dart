@@ -6,16 +6,15 @@ import '../models/meal.dart';
 class Meals extends StatelessWidget {
   final String? title;
   final List<Meal> meals;
-  final void Function(Meal meal) onTapFavorite;
 
-  const Meals({super.key, this.title, required this.meals, required this.onTapFavorite});
+  const Meals({super.key, this.title, required this.meals});
 
   @override
   Widget build(BuildContext context) {
     Widget content = ListView.builder(
       itemCount: meals.length,
       itemBuilder: (ctx, index) =>
-          MealItem(meal: meals[index], onTapFavorite: onTapFavorite),
+          MealItem(meal: meals[index]),
     );
 
     if (meals.isEmpty) {

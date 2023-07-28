@@ -7,9 +7,8 @@ import '../models/meal.dart';
 
 class MealItem extends StatelessWidget {
   final Meal meal;
-  final void Function(Meal meal) onTapFavorite;
 
-  const MealItem({super.key, required this.meal, required this.onTapFavorite});
+  const MealItem({super.key, required this.meal});
 
   void _onMealItemClick(BuildContext context, Meal meal) {
     Navigator.push(
@@ -17,7 +16,6 @@ class MealItem extends StatelessWidget {
       MaterialPageRoute(builder: (ctx) {
         return MealDetailsScreen(
           meal: meal,
-          onTapFavorite: onTapFavorite,
         );
       }),
     );
@@ -48,12 +46,15 @@ class MealItem extends StatelessWidget {
         },
         child: Stack(
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.maxFinite,
+            Hero(
+              tag: meal.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.maxFinite,
+              ),
             ),
             Positioned(
               bottom: 0,

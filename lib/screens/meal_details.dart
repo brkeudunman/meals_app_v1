@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals_app_v1/providers/favorite_meals_provider.dart';
 import 'package:meals_app_v1/widgets/meal_details/meal_traits.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../models/meal.dart';
 import '../widgets/list-view/list-view.dart';
 
-class MealDetailsScreen extends StatefulWidget {
+class MealDetailsScreen extends ConsumerStatefulWidget {
   final Meal meal;
-  final void Function(Meal meal) onTapFavorite;
 
-  const MealDetailsScreen(
-      {super.key, required this.meal, required this.onTapFavorite});
+  const MealDetailsScreen({super.key, required this.meal});
 
   @override
-  State<MealDetailsScreen> createState() {
+  ConsumerState<MealDetailsScreen> createState() {
     return _MealDetailsState();
   }
 }
 
-class _MealDetailsState extends State<MealDetailsScreen> {
-  bool switchVar = false;
-
-  void _switchVar() {
-    if (switchVar) {
-      setState(() {
-        switchVar = false;
-      });
-    } else {
-      setState(() {
-        switchVar = true;
-      });
-    }
-  }
-
+class _MealDetailsState extends ConsumerState<MealDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    bool _isFavorite =
+        ref.read(favoriteMealsProvider.notifier).isMealFavorite(widget.meal);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.meal.title),
         actions: [
           IconButton(
             onPressed: () {
-              widget.onTapFavorite(widget.meal);
-              _switchVar();
+              setState(() {
+                ref
+                    .read(favoriteMealsProvider.notifier)
+                    .toggleMealFavoriteStatus(widget.meal);
+              });
             },
-            icon: Icon(switchVar == false ? Icons.star_border : Icons.star),
-          )
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: Icon(
+                _isFavorite ? Icons.star : Icons.star_outline,
+                key: ValueKey(_isFavorite),
+              ),
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(
-                widget.meal.imageUrl,
+            Hero(
+              tag: widget.meal.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(
+                  widget.meal.imageUrl,
+                ),
               ),
             ),
             const SizedBox(
